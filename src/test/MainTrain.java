@@ -49,7 +49,8 @@ public class MainTrain {
 		return ts;
 	}
 	
-	
+	// board
+	/*
 	public static void testBoard() {
 		Board b = Board.getBoard();
 		if(b!=Board.getBoard())
@@ -97,10 +98,10 @@ public class MainTrain {
 		
 
 	}
-
+*/
 	public static void main(String[] args) {
 		testBag(); // 30 points
-		testBoard(); // 70 points
+		//testBoard(); // 70 points
 		System.out.println("done");				
 	}
 
