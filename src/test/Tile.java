@@ -30,7 +30,7 @@ public class Tile {
         private static Bag bag;
         public int[] lettersFreq = {9, 2, 2, 4, 12, 2, 3, 2, 9, 1, 1, 4, 2, 6, 8, 2, 1, 6, 4, 6, 4, 2, 2, 1, 2, 1};
         public final int[] freqFinalArr = {9, 2, 2, 4, 12, 2, 3, 2, 9, 1, 1, 4, 2, 6, 8, 2, 1, 6, 4, 6, 4, 2, 2, 1, 2, 1};
-        public Tile[] tiles = new Tile[26];
+        public Tile[] BagTiles = new Tile[26];
 
         private Bag() {
             char l='A';
@@ -38,7 +38,7 @@ public class Tile {
 
             for(int i = 0; i < 26; i++)
             {
-                this.tiles[i]= new Tile(this.lettersFreq[j],l);
+                this.BagTiles[i]= new Tile(this.lettersFreq[j],l);
                 j++;
                 l++;
             }
@@ -56,7 +56,7 @@ public class Tile {
                 randNum = (int)(Math.random() * (26));
 
             this.lettersFreq[randNum]--;
-            return this.tiles[randNum];
+            return this.BagTiles[randNum];
         }
 
         public int calcLetterAsciiVal(char l)
@@ -72,7 +72,7 @@ public class Tile {
 
             if(this.lettersFreq[index] > 0) {
                 this.lettersFreq[index]--;
-                return this.tiles[index];
+                return this.BagTiles[index];
             }
 
             return null;
