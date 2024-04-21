@@ -28,8 +28,8 @@ public class Tile {
 
     public static class Bag {
         private static Bag bag;
-        public int[] lettersFreq = {9, 2, 2, 4, 12, 2, 3, 2, 9, 1, 1, 4, 2, 6, 8, 2 ,1 ,6 ,4 ,6 ,4 ,2 ,2 ,2 ,1 ,2 ,1};
-        public final int[] freqFinalArr = {9, 2, 2, 4, 12, 2, 3, 2, 9, 1, 1, 4, 2, 6, 8, 2 ,1 ,6 ,4 ,6 ,4 ,2 ,2 ,2 ,1 ,2 ,1};
+        public int[] lettersFreq = {9, 2, 2, 4, 12, 2, 3, 2, 9, 1, 1, 4, 2, 6, 8, 2, 1, 6, 4, 6, 4, 2, 2, 1, 2, 1};
+        public final int[] freqFinalArr = {9, 2, 2, 4, 12, 2, 3, 2, 9, 1, 1, 4, 2, 6, 8, 2, 1, 6, 4, 6, 4, 2, 2, 1, 2, 1};
         public Tile[] tiles = new Tile[26];
 
         private Bag() {
@@ -67,6 +67,8 @@ public class Tile {
         public Tile getTile(char l)
         {
             int index = calcLetterAsciiVal(l);
+            if(index < 0 || index >= 26)
+                return null;
 
             if(this.lettersFreq[index] > 0) {
                 this.lettersFreq[index]--;
