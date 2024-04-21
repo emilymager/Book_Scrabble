@@ -9,12 +9,12 @@ public class Word {
         public int row, col;
         public boolean vertical;
 
-    public Word(boolean vertical, int col, int row, Tile[] tiles) {
+    public Word(Tile[] tiles, int col, int row, boolean vertical) {
         this.vertical = vertical;
         this.col = col;
         this.row = row;
 
-        this.tiles = new Tile[tiles.length];
+        this.tiles = new Tile[tiles.length]; // ???
         for(int i = 0; i < tiles.length; i++)
         {
             this.tiles[i] = tiles[i];
