@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class Board {
     public Square[][] squares; // ?
-    public ArrayList<Word>[] words;
+    public ArrayList<Word> words;
     public Tile[][] tiles ;
     private static Board board;
 
@@ -19,7 +19,7 @@ public class Board {
 
     public Board() {
         this.squares = new Square[15][15];
-        this.words = new ArrayList[0];
+        //this.words;
         this.tiles = new Tile[15][15];
 
         int[][] specialSquares = {
@@ -74,12 +74,21 @@ public class Board {
 
             return true;
         }
+        boolean flag = false;
 
-        for(int i = 0; i < w.tiles.length; i++)
+        for(int i = row; i < w.tiles.length; i++)
         {
-            if(this.tiles[i][col] != null)
+            if(this.tiles[i][col] != w.tiles[i] &&
+                    this.tiles[i][col] != null)
+            {
                 return false;
+            }
+            if(!flag && this.tiles[i][col] == w.tiles[i])
+                flag = true;
         }
+
+        if(flag)
+            return true;
 
         if(row - 1 > 0 && this.tiles[row - 1][col] != null)
             return true;
@@ -112,11 +121,19 @@ public class Board {
             return true;
         }
 
+        boolean flag = false;
+
         for(int i = col; i < w.tiles.length; i++)
         {
-            if(this.tiles[row][i] != null)
+            if(this.tiles[row][i] != w.tiles[i] && this.tiles[row][i] != null)
+            {
                 return false;
+            }
+            if(!flag && this.tiles[row][i] == w.tiles[i])
+                flag = true;
         }
+        if(flag)
+            return true;
 
         if(col - 1 > 0 && this.tiles[row][col - 1] != null)
             return true;
@@ -132,6 +149,7 @@ public class Board {
             if(row + 1 < 15 && this.tiles[row + 1][i] != null)
                 return true;
         }
+
         return false;
     }
 
@@ -146,6 +164,59 @@ public class Board {
     public boolean dictionaryLegal(Word w)
     {
         return true;
+    }
+
+    public Word WhatVerticalWordAdded(Word w)
+    {
+        return null;
+    }
+
+    public Word WhatHorizontalWordAdded(Word w)
+    {
+        return null;
+    }
+
+    public void placeVerticaly(Word w)
+    {}
+
+    public void UnPlaceVerticaly(Word w)
+    {}
+
+    public void placeHorizontal(Word w)
+    {}
+
+    public void UnPlaceHorizontal(Word w)
+    {}
+
+    public void createTilesCopy(Tile[][] tiles2copy)
+    {
+        for(int i = 0; i < this.tiles.length; i++)
+        {
+            for(int j = 0; j < this.tiles.length; j++)
+            {
+                tiles2copy[i][j] = new Tile[this.tiles[i][j].score, this.tiles[i][j].letter];
+            }
+        }
+    }
+
+
+    public ArrayList<Word> getWords(Word w)
+    {
+        Tile[][] tryTiles = new Tile[15][15]; // a copy of the matrix tiles, which we will try make changes on
+        createTilesCopy(tryTiles);
+
+        if(w.vertical){
+
+
+            return words;
+        }
+
+        return words;
+    }
+
+    public int getScore(Word w)
+    {
+        return 1;
     }
 
 }
