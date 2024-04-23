@@ -2,6 +2,7 @@ package test;
 
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Board {
     public Square[][] squares; // ?
@@ -292,19 +293,68 @@ public class Board {
         if(w.vertical){
             placeVertical(w, tilesCopy); // places the word tile on the tiles copy matrix
             WhatVerticalWordAdded(w, tilesCopy);
-
-            return words;
         }
 
-        placeHorizontal(w, tilesCopy);
-        WhatHorizontalWordAdded(w, tilesCopy);
+        else {
+            placeHorizontal(w, tilesCopy);
+            WhatHorizontalWordAdded(w, tilesCopy);
+        }
 
         return words;
     }
 
+    public void checkScore(Square square, int score)
+    {
+        if(Objects.equals(square, "DL"))
+            score += 2 * square.t.score;
+
+        if(Objects.equals(square.color, "TL"))
+            score += 3 * square.t.score;
+
+        if(Objects.equals(square.color, "regular"))
+            score += square.t.score;
+    }
+
     public int getScore(Word w)
     {
-        return 1;
+        int score = 0;
+        boolean tripleWordScore = false, doubleWordScore = false;
+
+        if(w.vertical) {
+            for(int i = w.getRow(); i < w.tiles.length; i++)
+            {
+                checkScore(squares[i][w.getCol()], score);
+
+                if(Objects.equals(squares[i][w.getCol()].color, "TW"))
+                    tripleWordScore = true;
+
+                if(Objects.equals(squares[i][w.getCol()].color, "DW"))
+                    doubleWordScore = true;
+            }
+        }
+
+        else {
+            for(int i = w.getCol(); i < w.tiles.length; i++)
+            {
+                checkScore(squares[w.getRow()][i], score);
+
+                if(Objects.equals(squares[w.getRow()][i].color, "TW"))
+                    tripleWordScore = true;
+
+                if(Objects.equals(squares[w.getRow()][i].color, "DW"))
+                    doubleWordScore = true;
+            }
+
+        }
+
+
+        if(tripleWordScore)
+            score *= 3;
+
+        if(doubleWordScore)
+            score *= 2;
+
+        return score;
     }
 
 }
