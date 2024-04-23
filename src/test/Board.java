@@ -69,10 +69,7 @@ public class Board {
 
         // first player
         if(this.tiles[7][7] == null) {
-            if(row != 7 && col != 7)
-                return false;
-
-            return true;
+            return row == 7 || col == 7;
         }
         boolean flag = false;
 
@@ -116,9 +113,7 @@ public class Board {
 
         // first player
         if(this.tiles[7][7] == null) {
-            if(row != 7 && col != 7)
-                return false;
-            return true;
+            return row == 7 || col == 7;
         }
 
         boolean flag = false;
@@ -166,27 +161,116 @@ public class Board {
         return true;
     }
 
-    public Word WhatVerticalWordAdded(Word w)
+    public int findFirstIndexOfWordFromLeft(int row, int col, Tile[][] tilesCopy)
     {
-        return null;
+        int i = col;
+
+        while(tilesCopy[row][i] != null && i >= 0)
+            i--;
+
+        return col - i;
     }
 
-    public Word WhatHorizontalWordAdded(Word w)
+    public void WhatVerticalWordAdded(Word w, Tile[][] tilesCopy)
     {
-        return null;
+        int row = w.getRow(), col = w.getCol();
+        int startCol = findFirstIndexOfWordFromLeft(row, col, tilesCopy);
+        int j = startCol;
+
+        boolean isDiff = false;
+
+        while(tilesCopy[row][j] != null) {
+            if (tilesCopy[row][j] != this.tiles[row][j])
+                isDiff = true;
+            j++;
+        }
+
+        if(!isDiff)
+            return;
+
+        int newWordSize = j - startCol;
+        Tile[] newWordTiles = new Tile[newWordSize];
+        int i = startCol;
+
+        for(int k = 0; k < newWordSize; k++) {
+            newWordTiles[k] = tilesCopy[row][i];
+            i++;
+        }
+
+        Word newWord = new Word(newWordTiles, col, startCol, true);
+        if(dictionaryLegal(newWord))
+            this.words.add(newWord);
+
     }
 
-    public void placeVerticaly(Word w)
-    {}
+    public int findFirstIndexOfWordAbove(int row, int col, Tile[][] tilesCopy)
+    {
+        int i = row;
 
-    public void UnPlaceVerticaly(Word w)
-    {}
+        while(tilesCopy[i][col] != null && i >= 0)
+            i--;
 
-    public void placeHorizontal(Word w)
-    {}
+        return row - i;
+    }
 
-    public void UnPlaceHorizontal(Word w)
-    {}
+
+    public void checkIfWordExistedHorizontal(int row, Tile[][] tilesCopy, int col){
+        int startRow = findFirstIndexOfWordAbove(row, col, tilesCopy); // will indicate where our possible new word will start
+        int j = startRow;
+
+        boolean isDiff = false;
+
+        while(tilesCopy[j][col] != null) {
+            if (tilesCopy[j][col] != this.tiles[j][col])
+                isDiff = true;
+            j++;
+        }
+
+        if(!isDiff) // means that there isn't a new word
+            return;
+
+        int newWordSize = j - startRow;
+        Tile[] newWordTiles = new Tile[newWordSize];
+        int i = startRow;
+
+        for(int k = 0; k < newWordSize; k++) {
+            newWordTiles[k] = tilesCopy[i][col];
+            i++;
+        }
+
+        Word newWord = new Word(newWordTiles, col, startRow, true);
+        if(dictionaryLegal(newWord))
+            this.words.add(newWord);
+    }
+
+    public void WhatHorizontalWordAdded(Word w, Tile[][] tilesCopy)
+    {
+        for(int i = w.getCol(); i < w.tiles.length; i++)
+        {
+            if(tilesCopy[w.getRow() - 1][i] != null || tilesCopy[w.getRow() + 1][i] == null)
+                checkIfWordExistedHorizontal(w.getRow(), tilesCopy, i);
+        }
+        this.words.add(w);
+    }
+
+    public void placeVertical(Word w, Tile[][] tilesCopy)
+    {
+        int j = 0;
+        for(int i = w.getRow(); i < w.tiles.length; i++) {
+            tilesCopy[i][w.getCol()] = w.tiles[j];
+            j++;
+        }
+    }
+
+    public void placeHorizontal(Word w, Tile[][] tilesCopy)
+    {
+        int j = 0;
+        for(int i = w.getCol(); i < w.tiles.length; i++)
+        {
+            tilesCopy[w.getRow()][j]= w.tiles[j];
+            j++;
+        }
+    }
 
     public void createTilesCopy(Tile[][] tiles2copy)
     {
@@ -194,7 +278,7 @@ public class Board {
         {
             for(int j = 0; j < this.tiles.length; j++)
             {
-                tiles2copy[i][j] = new Tile[this.tiles[i][j].score, this.tiles[i][j].letter];
+                tiles2copy[i][j] = this.tiles[i][j];
             }
         }
     }
@@ -202,14 +286,18 @@ public class Board {
 
     public ArrayList<Word> getWords(Word w)
     {
-        Tile[][] tryTiles = new Tile[15][15]; // a copy of the matrix tiles, which we will try make changes on
-        createTilesCopy(tryTiles);
+        Tile[][] tilesCopy = new Tile[15][15]; // a copy of the matrix tiles, which we will try to make changes on
+        createTilesCopy(tilesCopy);
 
         if(w.vertical){
-
+            placeVertical(w, tilesCopy); // places the word tile on the tiles copy matrix
+            WhatVerticalWordAdded(w, tilesCopy);
 
             return words;
         }
+
+        placeHorizontal(w, tilesCopy);
+        WhatHorizontalWordAdded(w, tilesCopy);
 
         return words;
     }
