@@ -239,7 +239,6 @@ public class Board {
 
         return score;
     }
-
 }
 
 class Square {
