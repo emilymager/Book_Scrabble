@@ -9,7 +9,7 @@ public class Word {
         public int row, col;
         public boolean vertical;
 
-    public Word(Tile[] tiles, int col, int row, boolean vertical) {
+    public Word(Tile[] tiles, int row, int col, boolean vertical) {
         this.vertical = vertical;
         this.col = col;
         this.row = row;

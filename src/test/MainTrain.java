@@ -62,13 +62,21 @@ public class MainTrain {
 		for (int i = 0; i < ts.length; i++)
 			ts[i] = bag.getRand();
 
-		Word w0 = new Word(ts, 0, 6, true);
+		Word w0 = new Word(ts, 0, 6, true); // borad legal should return false
 		Word w1 = new Word(ts, 7, 6, false);
 		Word w2 = new Word(ts, 6, 7, true);
 		Word w3 = new Word(ts, -1, 7, true);
 		Word w4 = new Word(ts, 7, -1, false);
 		Word w5 = new Word(ts, 0, 7, true);
 		Word w6 = new Word(ts, 7, 0, false);
+
+		boolean res0 = b.boardLegal(w0);
+		boolean res1 = b.boardLegal(w1);
+		boolean res2 = b.boardLegal(w2);
+		boolean res3 = b.boardLegal(w3);
+		boolean res4 = b.boardLegal(w4);
+		boolean res5 = b.boardLegal(w5);
+		boolean res6 = b.boardLegal(w6);
 
 		if (b.boardLegal(w0) || b.boardLegal(w1) || b.boardLegal(w2) || b.boardLegal(w3) || b.boardLegal(w4) || !b.boardLegal(w5) || !b.boardLegal(w6))
 			System.out.println("your boardLegal function is wrong (-10)");

@@ -5,9 +5,8 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Board {
-    public Square[][] squares; // ?
+    public Square[][] squares;
     public ArrayList<Word> words;
-    public Tile[][] tiles ;
     private static Board board;
 
     public static Board getBoard()
@@ -21,7 +20,6 @@ public class Board {
     public Board() {
         this.squares = new Square[15][15];
         //this.words;
-        this.tiles = new Tile[15][15];
 
         int[][] specialSquares = {
                 {0, 3}, {0, 11}, {2, 6}, {2, 8},
@@ -65,92 +63,102 @@ public class Board {
     {
         int row = w.getRow(), col = w.getCol();
 
-        if(row + w.tiles.length > 15)
+        if(row + w.tiles.length - 1 > 14)
             return false;
 
-        // first player
-        if(this.tiles[7][7] == null) {
-            return row == 7 || col == 7;
-        }
+        if(squares[7][7].t == null)
+            return true;
+
         boolean flag = false;
 
-        for(int i = row; i < w.tiles.length; i++)
+        for(int i = row; i < w.tiles.length + row - 1; i++)
         {
-            if(this.tiles[i][col] != w.tiles[i] &&
-                    this.tiles[i][col] != null)
+            if(this.squares[i][col].t != w.tiles[i] && this.squares[i][col].t != null)
             {
                 return false;
             }
-            if(!flag && this.tiles[i][col] == w.tiles[i])
+            if(!flag && this.squares[i][col].t == w.tiles[i])
                 flag = true;
         }
 
         if(flag)
             return true;
 
-        if(row - 1 > 0 && this.tiles[row - 1][col] != null)
-            return true;
-
-        if(row + 1 < 15 && this.tiles[row + 1][col] != null)
-            return true;
-
         for(int i = 0; i < w.tiles.length; i++)
         {
-            if(col - 1 > 0 && this.tiles[i][col - 1] != null)
+            if(col - 1 > 0 && this.squares[i][col - 1].t != null)
                 return true;
 
-            if(col + 1 < 15 && this.tiles[i][col + 1] != null)
+
+            if(col + 1 < 15 && this.squares[i][col + 1].t != null)
                 return true;
         }
         return false;
     }
+
 
     public boolean chackLegalHorizontal(Word w)
     {
         int row = w.getRow(), col = w.getCol();
 
-        if(col + w.tiles.length > 15)
+        if(col + w.tiles.length - 1 > 14)
             return false;
 
-        // first player
-        if(this.tiles[7][7] == null) {
-            return row == 7 || col == 7;
-        }
+        if(squares[7][7].t == null)
+            return true;
 
         boolean flag = false;
 
-        for(int i = col; i < w.tiles.length; i++)
+        for(int i = col; i < w.tiles.length + col - 1; i++)
         {
-            if(this.tiles[row][i] != w.tiles[i] && this.tiles[row][i] != null)
+            if(this.squares[row][i].t != w.tiles[i] && this.squares[row][i].t != null)
             {
                 return false;
             }
-            if(!flag && this.tiles[row][i] == w.tiles[i])
+            if(!flag && this.squares[row][i].t == w.tiles[i])
                 flag = true;
         }
         if(flag)
             return true;
 
-        if(col - 1 > 0 && this.tiles[row][col - 1] != null)
-            return true;
-
-        if(col + 1 < 15 && this.tiles[row][col + 1] != null)
-            return true;
-
         for(int i = col; i < w.tiles.length; i++)
         {
-            if(row - 1 > 0 && this.tiles[row - 1][i] != null)
+            if(row - 1 > 0 && this.squares[row - 1][i].t != null)
                 return true;
 
-            if(row + 1 < 15 && this.tiles[row + 1][i] != null)
+            if(row + 1 < 15 && this.squares[row + 1][i].t != null)
                 return true;
         }
 
         return false;
     }
 
+    public boolean containsMiddle(int length, int row, int col, boolean vertical){
+        if(vertical) {
+            if(col != 7)
+                return false;
+            if(row <= 7 && row + length - 1 >= 7 && row + length - 1 <= 14)
+                return true;
+        }
+        else {
+            if (row != 7)
+                return false;
+
+            if (col <= 7 && col + length - 1 >= 7 && col + length - 1 <= 14)
+                return true;
+        }
+        return false;
+    }
+
     public boolean boardLegal(Word w)
     {
+        if(w.getRow() < 0 || w.getRow() > 14 || w.getCol() < 0 || w.getCol() > 14)
+            return false;
+
+        // first player
+        if(this.squares[7][7].t == null && !containsMiddle(w.tiles.length, w.getRow(), w.getCol(), w.vertical) )
+            return false;
+
         if(w.vertical)
             return chackLegalVertical(w);
 
@@ -162,148 +170,19 @@ public class Board {
         return true;
     }
 
-    public int findFirstIndexOfWordFromLeft(int row, int col, Tile[][] tilesCopy)
+   public ArrayList<Word> getWords(Word w)
     {
-        int i = col;
-
-        while(tilesCopy[row][i] != null && i >= 0)
-            i--;
-
-        return col - i;
-    }
-
-    public void WhatVerticalWordAdded(Word w, Tile[][] tilesCopy)
-    {
-        int row = w.getRow(), col = w.getCol();
-        int startCol = findFirstIndexOfWordFromLeft(row, col, tilesCopy);
-        int j = startCol;
-
-        boolean isDiff = false;
-
-        while(tilesCopy[row][j] != null) {
-            if (tilesCopy[row][j] != this.tiles[row][j])
-                isDiff = true;
-            j++;
-        }
-
-        if(!isDiff)
-            return;
-
-        int newWordSize = j - startCol;
-        Tile[] newWordTiles = new Tile[newWordSize];
-        int i = startCol;
-
-        for(int k = 0; k < newWordSize; k++) {
-            newWordTiles[k] = tilesCopy[row][i];
-            i++;
-        }
-
-        Word newWord = new Word(newWordTiles, col, startCol, true);
-        if(dictionaryLegal(newWord))
-            this.words.add(newWord);
-
-    }
-
-    public int findFirstIndexOfWordAbove(int row, int col, Tile[][] tilesCopy)
-    {
-        int i = row;
-
-        while(tilesCopy[i][col] != null && i >= 0)
-            i--;
-
-        return row - i;
-    }
-
-
-    public void checkIfWordExistedHorizontal(int row, Tile[][] tilesCopy, int col){
-        int startRow = findFirstIndexOfWordAbove(row, col, tilesCopy); // will indicate where our possible new word will start
-        int j = startRow;
-
-        boolean isDiff = false;
-
-        while(tilesCopy[j][col] != null) {
-            if (tilesCopy[j][col] != this.tiles[j][col])
-                isDiff = true;
-            j++;
-        }
-
-        if(!isDiff) // means that there isn't a new word
-            return;
-
-        int newWordSize = j - startRow;
-        Tile[] newWordTiles = new Tile[newWordSize];
-        int i = startRow;
-
-        for(int k = 0; k < newWordSize; k++) {
-            newWordTiles[k] = tilesCopy[i][col];
-            i++;
-        }
-
-        Word newWord = new Word(newWordTiles, col, startRow, true);
-        if(dictionaryLegal(newWord))
-            this.words.add(newWord);
-    }
-
-    public void WhatHorizontalWordAdded(Word w, Tile[][] tilesCopy)
-    {
-        for(int i = w.getCol(); i < w.tiles.length; i++)
-        {
-            if(tilesCopy[w.getRow() - 1][i] != null || tilesCopy[w.getRow() + 1][i] == null)
-                checkIfWordExistedHorizontal(w.getRow(), tilesCopy, i);
-        }
-        this.words.add(w);
-    }
-
-    public void placeVertical(Word w, Tile[][] tilesCopy)
-    {
-        int j = 0;
-        for(int i = w.getRow(); i < w.tiles.length; i++) {
-            tilesCopy[i][w.getCol()] = w.tiles[j];
-            j++;
-        }
-    }
-
-    public void placeHorizontal(Word w, Tile[][] tilesCopy)
-    {
-        int j = 0;
-        for(int i = w.getCol(); i < w.tiles.length; i++)
-        {
-            tilesCopy[w.getRow()][j]= w.tiles[j];
-            j++;
-        }
-    }
-
-    public void createTilesCopy(Tile[][] tiles2copy)
-    {
-        for(int i = 0; i < this.tiles.length; i++)
-        {
-            for(int j = 0; j < this.tiles.length; j++)
-            {
-                tiles2copy[i][j] = this.tiles[i][j];
-            }
-        }
-    }
-
-
-    public ArrayList<Word> getWords(Word w)
-    {
-        Tile[][] tilesCopy = new Tile[15][15]; // a copy of the matrix tiles, which we will try to make changes on
-        createTilesCopy(tilesCopy);
-
         if(w.vertical){
-            placeVertical(w, tilesCopy); // places the word tile on the tiles copy matrix
-            WhatVerticalWordAdded(w, tilesCopy);
+
         }
 
         else {
-            placeHorizontal(w, tilesCopy);
-            WhatHorizontalWordAdded(w, tilesCopy);
         }
 
         return words;
     }
 
-    public void checkScore(Square square, int score)
+    public int checkScore(Square square, int score)
     {
         if(Objects.equals(square, "DL"))
             score += 2 * square.t.score;
@@ -313,46 +192,50 @@ public class Board {
 
         if(Objects.equals(square.color, "regular"))
             score += square.t.score;
+
+        return score;
     }
 
     public int getScore(Word w)
     {
         int score = 0;
-        boolean tripleWordScore = false, doubleWordScore = false;
+        int tripleWordScore = 0, doubleWordScore = 0;
 
         if(w.vertical) {
-            for(int i = w.getRow(); i < w.tiles.length; i++)
+            for(int i = w.getRow(); i < w.tiles.length + w.getRow() - 1; i++)
             {
-                checkScore(squares[i][w.getCol()], score);
+                score = checkScore(squares[i][w.getCol()], score);
 
                 if(Objects.equals(squares[i][w.getCol()].color, "TW"))
-                    tripleWordScore = true;
+                    tripleWordScore++;
 
                 if(Objects.equals(squares[i][w.getCol()].color, "DW"))
-                    doubleWordScore = true;
+                    doubleWordScore++;
             }
         }
 
         else {
-            for(int i = w.getCol(); i < w.tiles.length; i++)
+            for(int i = w.getCol(); i < w.tiles.length + w.getCol() - 1; i++)
             {
-                checkScore(squares[w.getRow()][i], score);
+                score = checkScore(squares[w.getRow()][i], score);
 
                 if(Objects.equals(squares[w.getRow()][i].color, "TW"))
-                    tripleWordScore = true;
+                    tripleWordScore++;
 
                 if(Objects.equals(squares[w.getRow()][i].color, "DW"))
-                    doubleWordScore = true;
+                    doubleWordScore++;
             }
-
         }
 
-
-        if(tripleWordScore)
+        while(tripleWordScore != 0) {
             score *= 3;
+            tripleWordScore--;
+        }
 
-        if(doubleWordScore)
+        while(doubleWordScore != 0) {
             score *= 2;
+            doubleWordScore--;
+        }
 
         return score;
     }
