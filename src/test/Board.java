@@ -397,15 +397,16 @@ public class Board {
         }
         return 0;
     }
-}
 
 
-class Square {
-    public Tile t;
-    public String color;
+    public class Square {
+        public Tile t;
+        public String color;
 
-    public Square(Tile t, String color) {
-        this.t = t;
-        this.color = color;
+        public Square(Tile t, String color) {
+            this.t = t;
+            this.color = color;
+        }
     }
 }
+
