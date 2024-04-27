@@ -30,17 +30,17 @@ public class Board {
         String[][] layout = {
                 {TW, reg, reg, DL, reg, reg, reg, TW, reg, reg, reg, DL, reg, reg, TW},
                 {reg, DW, reg, reg, reg, TL, reg, reg, reg, TL, reg, reg, reg, DW, reg},
-                {reg, reg, DW, reg, reg, reg, TL, reg, DL, reg, reg, reg, DW, reg, reg},
+                {reg, reg, DW, reg, reg, reg, DL, reg, DL, reg, reg, reg, DW, reg, reg},
                 {DL, reg, reg, DW, reg, reg, reg, DL, reg, reg, reg, DW, reg, reg, DL},
                 {reg, reg, reg, reg, DW, reg, reg, reg, reg, reg, DW, reg, reg, reg, reg},
                 {reg, TL, reg, reg, reg, TL, reg, reg, reg, TL, reg, reg, reg, TL, reg},
-                {reg, reg, TL, reg, reg, reg, TL, reg, TL, reg, reg, reg, TL, reg, reg},
+                {reg, reg, DL, reg, reg, reg, DL, reg, DL, reg, reg, reg, DL, reg, reg},
                 {TW, reg, reg, DL, reg, reg, reg, DW, reg, reg, reg, DL, reg, reg, TW},
-                {reg, reg, DL, reg, reg, reg, TL, reg, TL, reg, reg, reg, DL, reg, reg},
+                {reg, reg, DL, reg, reg, reg, DL, reg, DL, reg, reg, reg, DL, reg, reg},
                 {reg, TL, reg, reg, reg, TL, reg, reg, reg, TL, reg, reg, reg, TL, reg},
                 {reg, reg, reg, reg, DW, reg, reg, reg, reg, reg, DW, reg, reg, reg, reg},
                 {DL, reg, reg, DW, reg, reg, reg, DL, reg, reg, reg, DW, reg, reg, DL},
-                {reg, reg, DW, reg, reg, reg, TL, reg, DL, reg, reg, reg, DW, reg, reg},
+                {reg, reg, DW, reg, reg, reg, DL, reg, DL, reg, reg, reg, DW, reg, reg},
                 {reg, DW, reg, reg, reg, TL, reg, reg, reg, TL, reg, reg, reg, DW, reg},
                 {TW, reg, reg, DL, reg, reg, reg, TW, reg, reg, reg, DL, reg, reg, TW}
         };
@@ -176,6 +176,8 @@ public class Board {
         while(i - 1 >= 0 && this.squares[i - 1][col].t != null)
             i--;
 
+        int startRow = i;
+
         while(j + 1 <= 14 && this.squares[j + 1][col].t != null)
             j++;
 
@@ -192,7 +194,7 @@ public class Board {
 
             k++;
         }
-        Word newWord = new Word(newWordTiles, newWordTiles.length - j + 1, col, true);
+        Word newWord = new Word(newWordTiles, startRow, col, true);
         if(dictionaryLegal(newWord))
             this.words.add(newWord);
     }
@@ -204,6 +206,8 @@ public class Board {
 
         while(i - 1 >= 0 && this.squares[row][i - 1].t != null)
             i--;
+
+        int startCol = i;
 
         while(j + 1 <= 14 && this.squares[row][j + 1].t != null)
             j++;
@@ -221,7 +225,7 @@ public class Board {
 
             k++;
         }
-        Word newWord = new Word(newWordTiles, row, newWordTiles.length - j + 1, false);
+        Word newWord = new Word(newWordTiles, row, startCol, false);
         if(dictionaryLegal(newWord))
             this.words.add(newWord);
     }
@@ -230,16 +234,16 @@ public class Board {
     {
         boolean flag = false;
         int j = 0;
-        for(int i = col; i < wordLen + col - 1; i++)
+        for(int i = col; i < wordLen + col; i++)
         {
             if(tiles[j] != null) { // ??
                 if (row - 1 >= 0 && this.squares[row - 1][i].t != null) {
-                    getNewVerticalWord(row, i, squares[row][i].t);
+                    getNewVerticalWord(row, i, tiles[j]);
                     flag = true;
                 }
 
                 if (row + 1 <= 14 && this.squares[row + 1][i].t != null && !flag) {
-                    getNewVerticalWord(row, i, squares[row][i].t);
+                    getNewVerticalWord(row, i, tiles[j]);
                     flag = true;
                 }
 
@@ -285,16 +289,13 @@ public class Board {
 
     public int checkScore(Square square, int score)
     {
-        if(Objects.equals(square, "DL"))
-            score += 2 * square.t.score;
+        if(Objects.equals(square.color, "DL"))
+            return score + 2 * square.t.score;
 
         if(Objects.equals(square.color, "TL"))
-            score += 3 * square.t.score;
+            return score + 3 * square.t.score;
 
-        else
-            score += square.t.score;
-
-        return score;
+        return score + square.t.score;
     }
 
     public int getScore(Word w)
