@@ -14,11 +14,8 @@ public class Word {
         this.col = col;
         this.row = row;
 
-        this.tiles = new Tile[tiles.length]; // ???
-        for(int i = 0; i < tiles.length; i++)
-        {
-            this.tiles[i] = tiles[i];
-        }
+        //this.tiles = new Tile[tiles.length]; // ???
+        this.tiles = tiles;
     }
 
     public Tile[] getTiles() {
@@ -45,3 +42,5 @@ public class Word {
         return row == word.row && col == word.col && vertical == word.vertical && Objects.deepEquals(tiles, word.tiles);
     }
 }
+
+// :)

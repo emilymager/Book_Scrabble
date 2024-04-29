@@ -55,6 +55,24 @@ public class Board {
         this.words = new ArrayList<>();
     }
 
+    public boolean checkIfTilesValid(Word w)
+    {
+        int counter = 0;
+        for(int k = 0; k < w.tiles.length; k++) // checking if the tiles are valid
+        {
+            if((w.tiles[k] != null) && (w.tiles[k].letter > 'Z' || w.tiles[k].letter < 'A'))
+                return false;
+
+            if(w.tiles[k] == null)
+                counter++;
+        }
+
+        if(counter == w.tiles.length)
+            return false;
+
+        return true;
+    }
+
     public boolean checkLegalVertical(Word w)
     {
         int row = w.getRow(), col = w.getCol();
@@ -62,18 +80,26 @@ public class Board {
         if(row + w.tiles.length - 1 > 14)
             return false;
 
+        if(!checkIfTilesValid(w))
+            return false;
+
         if(squares[7][7].t == null)
             return true;
 
-        if(row - 1 >= 0 && this.squares[row - 1][col].t != null)
-            return true;
+        int j = row;
+        int k = 0;
 
-        if(row + 1 <= 14 && this.squares[row + 1][col].t != null)
-            return true;
+        while(j < w.tiles.length + row) {
+            if (w.tiles[k] != null && this.squares[j][col].t != null)
+                if (w.tiles[k] != this.squares[j][col].t)
+                    return false;
+            j++;
+            k++;
+        }
 
         // add case where I check if I continued a word or if I contain an existing letter
 
-        int j = 0;
+        j = 0;
         for(int i = row; i < w.tiles.length + row - 1; i++)
         {
             if(w.tiles[j] == null)
@@ -90,6 +116,15 @@ public class Board {
             if(col + 1 < 15 && this.squares[i][col + 1].t != null)
                 return true;
         }
+
+
+
+        if(row - 1 >= 0 && this.squares[row - 1][col].t != null)
+            return true;
+
+        if(row + 1 <= 14 && this.squares[row + 1][col].t != null)
+            return true;
+
         return false;
     }
 
@@ -101,16 +136,23 @@ public class Board {
         if(col + w.tiles.length - 1 > 14)
             return false;
 
+        if(!checkIfTilesValid(w))
+            return false;
+
         if(squares[7][7].t == null)
             return true;
 
-        if(col - 1 >= 0 && this.squares[row][col - 1].t != null)
-            return true;
+        int j = col;
+        int k = 0;
+        while(j < w.tiles.length + col) {
+            if (w.tiles[k] != null && this.squares[row][j].t != null)
+                if (w.tiles[k] != this.squares[row][j].t)
+                    return false;
+            j++;
+            k++;
+        }
 
-        if(col + 1 <= 14 && this.squares[row][col + 1].t != null)
-            return true;
-
-        int j = 0;
+        j = 0;
         for(int i = col; i < w.tiles.length + col; i++)
         {
             if(w.tiles[j] == null)
@@ -127,6 +169,12 @@ public class Board {
             if(row + 1 < 15 && this.squares[row + 1][i].t != null)
                 return true;
         }
+
+        if(col - 1 >= 0 && this.squares[row][col - 1].t != null)
+            return true;
+
+        if(col + 1 <= 14 && this.squares[row][col + 1].t != null)
+            return true;
 
         return false;
     }
@@ -199,7 +247,7 @@ public class Board {
             this.words.add(newWord);
     }
 
-    public void getNewHorizontalWord(int row, int col, Tile t)
+    public void getNewHorizontalWord(int col, int row, Tile t)
     {
         int i = col; // the initial index of our new word
         int j = col; // // the final index of our new word
@@ -256,16 +304,16 @@ public class Board {
     public void getWordsVerticalWordAdded(int row, int col, int wordLen, Tile[] tiles){
         boolean flag = false;
         int j = 0;
-        for(int i = row; i < wordLen + row - 1; i++)
+        for(int i = row; i < wordLen + row; i++)
         {
             if(tiles[j] != null) { // ??
                 if (col - 1 >= 0 && this.squares[i][col - 1].t != null) {
-                    getNewHorizontalWord(col, i, squares[i][col].t);
+                    getNewHorizontalWord(col, i, tiles[j]);
                     flag = true;
                 }
 
                 if (col + 1 <= 14 && this.squares[i][col + 1].t != null && !flag) {
-                    getNewHorizontalWord(col, i, squares[i][col].t);
+                    getNewHorizontalWord(col, i, tiles[j]);
                     flag = true;
                 }
                 flag = false;
@@ -395,7 +443,21 @@ public class Board {
             placeWord(w);
             return getScoreForAllNewWords(oldSize);
         }
+
         return 0;
+    }
+
+    public Tile[][] getTiles()
+    {
+        Tile[][] tiles = new Tile[15][15];
+        for(int i = 0; i < 15; i++)
+        {
+            for(int j = 0; j < 15; j++)
+            {
+                tiles[i][j] = squares[i][j].t;
+            }
+        }
+        return tiles;
     }
 
 
@@ -410,3 +472,4 @@ public class Board {
     }
 }
 
+// good luck to me :)
