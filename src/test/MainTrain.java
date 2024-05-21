@@ -66,8 +66,6 @@ public class MainTrain {
 		for(String w : words)
 			bf.add(w);
 
-		String s = bf.toString();
-		boolean x= s.equals("0010010000000000000000000000000000000000000100000000001000000000000000000000010000000001000000000000000100000010100000000010000000000000000000000000000000110000100000000000000000000000000010000000001000000000000000000000000000000000000000000000000000001");
 		if(!bf.toString().equals("0010010000000000000000000000000000000000000100000000001000000000000000000000010000000001000000000000000100000010100000000010000000000000000000000000000000110000100000000000000000000000000010000000001000000000000000000000000000000000000000000000000000001"))
 			System.out.println("problem in the bit vector of the bloom filter (-10)");
 
@@ -85,7 +83,7 @@ public class MainTrain {
 		if(found)
 			System.out.println("problem finding words that should not exist in the bloom filter (-15)");
 	}
-	/*
+
 	public static void testIOSearch() throws Exception{
 		String words1 = "the quick brown fox \n jumps over the lazy dog";		
 		String words2 = "A Bloom filter is a space efficient probabilistic data structure, \n conceived by Burton Howard Bloom in 1970";
@@ -108,19 +106,20 @@ public class MainTrain {
 			System.out.println("problem with dictionarry in query (-5)");
 		if(!d.challenge("lazy"))
 			System.out.println("problem with dictionarry in query (-5)");
-	}*/
+	}
 
 	public static void main(String[] args) {
 		testLRU();
 		testLFU();
 		testCacheManager();
 		testBloomFilter();
+
 		try {
-			//testIOSearch();
+			testIOSearch();
 		} catch(Exception e) {
 			System.out.println("you got some exception (-10)");
 		}
-		//testDictionary();
+		testDictionary();
 		System.out.println("done");
 	}
 }
