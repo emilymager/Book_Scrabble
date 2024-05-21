@@ -46,6 +46,8 @@ public class LFU implements CacheReplacementPolicy {
             }
         }
 
+        map.remove(minKey);
+
         return minKey;
     }
 

@@ -28,6 +28,8 @@ public class LRU implements CacheReplacementPolicy {
             }
         }
 
+        map.remove(minKey);
+
         return minKey;
     }
 }

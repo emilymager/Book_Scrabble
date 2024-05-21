@@ -27,7 +27,7 @@ public class MainTrain {
 		if(!lfu.remove().equals("c"))
 			System.out.println("wrong implementation for LFU (-10)");
 	}
-	/*
+
 	public static void testCacheManager() {
 		CacheManager exists=new CacheManager(3, new LRU());
 		boolean b = exists.query("a");
@@ -59,31 +59,33 @@ public class MainTrain {
 			System.out.println("wrong result for CacheManager last queries (-10)");
 				
 	}
-	
+
 	public static void testBloomFilter() {
 		BloomFilter bf =new BloomFilter(256,"MD5","SHA1");
 		String[] words = "the quick brown fox jumps over the lazy dog".split(" ");
 		for(String w : words)
 			bf.add(w);
-		
+
+		String s = bf.toString();
+		boolean x= s.equals("0010010000000000000000000000000000000000000100000000001000000000000000000000010000000001000000000000000100000010100000000010000000000000000000000000000000110000100000000000000000000000000010000000001000000000000000000000000000000000000000000000000000001");
 		if(!bf.toString().equals("0010010000000000000000000000000000000000000100000000001000000000000000000000010000000001000000000000000100000010100000000010000000000000000000000000000000110000100000000000000000000000000010000000001000000000000000000000000000000000000000000000000000001"))
 			System.out.println("problem in the bit vector of the bloom filter (-10)");
-		
+
 		boolean found=true;
-		for(String w : words) 
+		for(String w : words)
 			found &= bf.contains(w);
-		
+
 		if(!found)
 			System.out.println("problem finding words that should exist in the bloom filter (-15)");
-		
+
 		found=false;
-		for(String w : words) 
+		for(String w : words)
 			found |= bf.contains(w+"!");
-		
+
 		if(found)
-			System.out.println("problem finding words that should not exist in the bloom filter (-15)");		
+			System.out.println("problem finding words that should not exist in the bloom filter (-15)");
 	}
-	
+	/*
 	public static void testIOSearch() throws Exception{
 		String words1 = "the quick brown fox \n jumps over the lazy dog";		
 		String words2 = "A Bloom filter is a space efficient probabilistic data structure, \n conceived by Burton Howard Bloom in 1970";
@@ -111,8 +113,8 @@ public class MainTrain {
 	public static void main(String[] args) {
 		testLRU();
 		testLFU();
-		//testCacheManager();
-		//testBloomFilter();
+		testCacheManager();
+		testBloomFilter();
 		try {
 			//testIOSearch();
 		} catch(Exception e) {
