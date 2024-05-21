@@ -4,6 +4,7 @@ package test;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Dictionary {
@@ -48,23 +49,22 @@ public class Dictionary {
     public boolean query(String word)
     {
         if(cmForExistingWords.query(word)) {
-            cmForExistingWords.add(word);
             return true;
         }
 
 
         if(cmForNoneExistingWords.query(word)) {
-            cmForNoneExistingWords.add(word);
             return false;
         }
 
-        if(bloomFilter.contains(word))
-        {
+        boolean wordExistsInBloomFilter = bloomFilter.contains(word);
+        if(wordExistsInBloomFilter)
             cmForExistingWords.add(word);
-            return true;
-        }
-        cmForNoneExistingWords.add(word);
-        return false;
+
+        else
+            cmForNoneExistingWords.add(word);
+
+        return wordExistsInBloomFilter;
     }
 
     public boolean challenge(String word)
@@ -73,17 +73,18 @@ public class Dictionary {
         {
             boolean bool = ioSearcher.search(word, ioSearcher.fileNames) ;
             if(bool)
-            {
                 cmForExistingWords.add(word);
-                return true;
-            }
-            cmForNoneExistingWords.add(word);
-            return false;
+
+            else
+                cmForNoneExistingWords.add(word);
+            return bool;
         }
 
         catch (FileNotFoundException e) {
+            e.printStackTrace();
             return false;
         }
+
     }
 
 }

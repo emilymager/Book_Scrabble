@@ -33,6 +33,10 @@ public class IOSearcher {
             System.err.println("File not found: " + f.getMessage());
         }
 
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
         finally {
             if (filesScanner != null) {
                 filesScanner.close();
