@@ -8,7 +8,11 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class IOSearcher {
-
+    String[] fileNames = null;
+    public IOSearcher(String ... fileNames)
+    {
+        this.fileNames = fileNames;
+    }
     public static boolean search(String word, String ... fileNames) throws FileNotFoundException
     {
         Scanner filesScanner = null;
